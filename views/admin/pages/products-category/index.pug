@@ -1,0 +1,65 @@
+extends ../../layouts/default.pug
+include ../../mixins/filter-status
+include ../../mixins/search
+include ../../mixins/pagination
+include ../../mixins/form-change-multi
+include ../../mixins/alert
+include ../../mixins/sort
+include ../../mixins/table-tree
+block main
+   +alert-success(5000)
+   if(role.permission.includes("products-category_view"))
+      h1 Danh mục Sản Phẩm
+      .card.mb-3
+         .card-header Bộ lọc và Tìm kiếm
+         .card-body 
+            .row
+               .col-6
+                  +filter-status(filterStatus)
+                     
+               .col-6
+                  +objectSearch(keyword)
+      .card.mb-3
+         .card-header Danh Sách
+         .card-body
+            .row 
+               .col-8 
+                  if(role.permission.includes("products-category_edit"))
+                     +form-change-multi(`${prefixAdmin}/products-category/change-multi?_method=PATCH`)
+               .col-4 
+                  if(role.permission.includes("products-category_create"))
+                     a(
+                        href= `${prefixAdmin}/products-category/create`
+                        class ="btn btn-outline-success mb-3"
+                     ) + Thêm mới
+            table(
+                  class = "table table-hover table-sm"
+                  checkbox-multi
+                  )
+                  thead(class="text-left")
+                     tr 
+                        th
+                           input(type="checkbox" name="checkall")   
+                        th STT 
+                        th Hình ảnh 
+                        th Tiêu đề
+                        th Vị trí
+                        if(role.permission.includes("products-category_edit"))
+                           th Trạng thái 
+                        th Hành Động 
+                  tbody 
+                     +table-tree(records)
+      form(
+         action="" 
+         id ="form-change-status"
+         method = "POST"
+         data-path = `${prefixAdmin}/products-category/change-status`
+      ) 
+
+      form(
+         action=""
+         id= "form-delete-status"
+         method = "POST"
+         data-path = `${prefixAdmin}/products-category/delete`
+      )
+      script(src="/admin/js/product.js") 
